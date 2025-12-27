@@ -2,28 +2,38 @@ name: Change Analyzer Agent
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened]   # triggers on new PRs
+  workflow_dispatch:   # allows manual runs for testing
 
 jobs:
   analyze-change:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code with full history
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # important for git diff to work
 
+      # 2️⃣ Setup Python
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      # 3️⃣ Print PR info
       - name: Print PR info
         run: |
           echo "PR number: ${{ github.event.pull_request.number }}"
           echo "Repo: ${{ github.repository }}"
+          echo "PR branch: ${{ github.event.pull_request.head.ref }}"
+          echo "Base branch: ${{ github.event.pull_request.base.ref }}"
 
+      # 4️⃣ Get PR diff and count lines
       - name: Get PR diff
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
           git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > pr.diff
+          echo "Diff saved to pr.diff"
           wc -l pr.diff
