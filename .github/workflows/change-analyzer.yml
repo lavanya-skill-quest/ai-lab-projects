@@ -37,3 +37,9 @@ jobs:
           git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > pr.diff
           echo "Diff saved to pr.diff"
           wc -l pr.diff
+
+      - name: Upload PR diff
+        uses: actions/upload-artifact@v3
+        with:
+          name: pr-diff
+          path: pr.diff
