@@ -39,7 +39,7 @@ jobs:
           wc -l pr.diff
 
       - name: Upload PR diff
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pr-diff
           path: pr.diff
