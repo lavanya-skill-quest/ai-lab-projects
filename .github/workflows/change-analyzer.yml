@@ -22,6 +22,7 @@ jobs:
           echo "PR number: ${{ github.event.pull_request.number }}"
           echo "Repo: ${{ github.repository }}"
             - name: Get PR diff
+      - name: Change Analyzer Agent 
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
           git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > pr.diff
