@@ -3,7 +3,7 @@ import joblib
 import numpy as np
 # test comment
 app = Flask(__name__)
-
+# I have added a comment line above
 # Load trained model
 model = joblib.load('random_forest_model.pkl')
 
@@ -20,7 +20,7 @@ features = [
 def home():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET'])
 def predict():
     # Get user input as float
     input_data = [float(request.form[feat]) for feat in features]
