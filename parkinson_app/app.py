@@ -20,7 +20,7 @@ features = [
 def home():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET'])
 def predict():
     # Get user input as float
     input_data = [float(request.form[feat]) for feat in features]
