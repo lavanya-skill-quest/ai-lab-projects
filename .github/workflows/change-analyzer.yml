@@ -33,7 +33,7 @@ jobs:
           wc -l pr.diff
 
       - name: Run Change Analyzer
-        run: python agents/run_change_analyzer.py
+        run: python -m agents.run_change_analyzer.py
 
       - name: Upload normalized diff
         uses: actions/upload-artifact@v4
