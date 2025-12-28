@@ -2,35 +2,29 @@ name: Change Analyzer Agent
 
 on:
   pull_request:
-    types: [opened]   # triggers on new PRs
-  workflow_dispatch:   # allows manual runs for testing
+    types: [opened]
+  workflow_dispatch:
 
 jobs:
-  analyze-change:
+  analyze-pr:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code with full history
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # important for git diff to work
+          fetch-depth: 0
 
-      # 2️⃣ Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.11"
 
-      # 3️⃣ Print PR info
-      - name: Print PR info
+      - name: Install dependencies
         run: |
-          echo "PR number: ${{ github.event.pull_request.number }}"
-          echo "Repo: ${{ github.repository }}"
-          echo "PR branch: ${{ github.event.pull_request.head.ref }}"
-          echo "Base branch: ${{ github.event.pull_request.base.ref }}"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      # 4️⃣ Get PR diff and count lines
       - name: Get PR diff
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
@@ -38,8 +32,17 @@ jobs:
           echo "Diff saved to pr.diff"
           wc -l pr.diff
 
-      - name: Upload PR diff
+      - name: Run Change Analyzer
+        run: python agents/run_change_analyzer.py
+
+      - name: Upload normalized diff
         uses: actions/upload-artifact@v4
         with:
-          name: pr-diff
-          path: pr.diff
+          name: normalized-diff
+          path: normalized_diff.txt
+
+      - name: Upload agent result
+        uses: actions/upload-artifact@v4
+        with:
+          name: change-analyzer-result
+          path: agent_result.json
